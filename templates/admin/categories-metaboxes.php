@@ -46,7 +46,7 @@
 								<tr valign="top" class="curated-posts-post">
 									<th scope="row"><label for="curated_posts[terms][<?php echo $term_args->term_id; ?>][<?php echo $term_key; ?>][post_id]"><strong><?php _e( 'Select a Post', 'curated-posts' ); ?></strong></label></th>
 									<td>
-										<select name="curated_posts[terms][<?php echo $term_args->term_id; ?>][<?php echo $term_key; ?>][post_id]" id="curated_posts[terms][<?php echo $term_args->term_id; ?>][<?php echo $term_key; ?>][post_id]" class="" style="width: 100%;">
+										<select name="curated_posts[terms][<?php echo $term_args->term_id; ?>][<?php echo $term_key; ?>][post_id]" id="curated_posts[terms][<?php echo $term_args->term_id; ?>][<?php echo $term_key; ?>][post_id]" class="select2" style="width: 100%;">
 											<option value=""></option>
 											<?php foreach ( $posts as $post ) : ?>
 												<option value="<?php esc_attr_e( $post->ID ); ?>" <?php if ( $term_data['post_id'] == $post->ID ) echo 'selected="selected"'; ?>><?php echo $post->post_title; ?> (ID: <?php echo $post->ID; ?>)</option>
