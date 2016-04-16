@@ -65,7 +65,7 @@ class Curated_Posts_Process_Settings {
 
 					// Ensure post_id is set and not empty, otherwise skip it
 					if ( isset( $post['post_id'] ) && ! empty( $post['post_id'] ) ) {
-						
+
 						$sanitized_posts[$key]['post_id'] = intval( strip_tags( $post['post_id'] ) );
 						$sanitized_posts[$key]['custom_title'] = sanitize_text_field( $post['custom_title'] );
 						$sanitized_posts[$key]['custom_link'] = sanitize_text_field( $post['custom_link'] );
@@ -93,14 +93,3 @@ class Curated_Posts_Process_Settings {
 endif;
 
 new Curated_Posts_Process_Settings;
-
-
-add_action( 'wp_head', 'kfjngn549gwiongw0' );
-function kfjngn549gwiongw0() {
-	
-	echo '<pre>';
-	
-	print_r( get_term_meta( 3, 'curated_posts', true ) );
-	
-	echo '</pre>';
-}
