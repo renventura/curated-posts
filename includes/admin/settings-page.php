@@ -95,7 +95,7 @@ function curated_posts_settings_page_enqueues() {
 		wp_enqueue_script( 'curated-posts-categories', CURATED_POSTS_PLUGIN_DIR_URL . 'assets/js/categories-tab.js', array('jquery'), CURATED_POSTS_PLUGIN_VERSION, true );	
 		wp_localize_script( 'curated-posts-categories', 'curated_posts_repeater', array(
 			'placeholder' => $placeholder,
-			'allowClear' => 'true'
+			'allowClear' => 'false'
 		));
 	}
 
