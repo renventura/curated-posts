@@ -168,30 +168,3 @@ function Curated_Posts() {
  *	Kick off!
  */
 Curated_Posts();
-
-include_once 'includes/admin/settings-page.php';
-
-add_action( 'wp_head', 'kfjngn549gwiongw0' );
-function kfjngn549gwiongw0() {
-
-	echo Curated_Posts()->settings_page->get_slug();
-
-	$terms = curated_posts_get_term_ids();
-
-	foreach ( $terms as $term_id ) {
-
-		$meta = get_term_meta( $term_id, 'curated_posts', true );
-
-		// echo '<pre>';
-
-		// print_r( $meta );
-
-		// echo '</pre>';
-	}
-
-	echo '<pre>';
-
-	print_r( curated_posts_get_curated_posts() );
-
-	echo '</pre>';
-}
