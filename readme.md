@@ -21,13 +21,13 @@ Genesis Framework example:
 
 ```php
 /**
- *	Output curated posts after entry content (Genesis)
+ *	Output a maximum of 3 curated posts after entry content, with no columns (Genesis)
  *
- *	@uses curated_posts_output( $columns = 3, $column_class = 'one-third', $first_class = 'first' )
+ *	@uses curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first' )
  */
 add_action( 'genesis_after_entry_content', 'curated_posts_genesis_after_entry_content' );
 function curated_posts_genesis_after_entry_content() {
-	curated_posts_output( 0 );
+	curated_posts_output( 3, 0 );
 }
 ```
 

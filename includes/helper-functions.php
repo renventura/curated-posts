@@ -61,15 +61,14 @@ function curated_posts_get_term_ids() {
 
 /**
  *	Get curated posts for a given post
+ *
+ *	@param (int) $post_id - Post ID for which to retrieve curated posts
+ *
+ *	@return (array) - Curated posts for given post
  */
-function curated_posts_get_curated_posts( $post_id = '', $first = true ) {
+function curated_posts_get_curated_posts( $post_id ) {
 
-	if ( ! $post_id ) {
-		global $post;
-		$post_id = $post->ID;
-	} else {
-		$post = get_post( $post_id );
-	}
+	$post = get_post( $post_id );
 
 	// Bail if not a post
 	if ( $post->post_type !== 'post' ) {
@@ -82,107 +81,139 @@ function curated_posts_get_curated_posts( $post_id = '', $first = true ) {
 	$curated_posts = array();
 
 	foreach ( $terms as $key => $term ) {
-		
+
 		if (  get_term_meta( $term->term_id, 'curated_posts', true ) ) {
-			$curated_posts[$key] = get_term_meta( $term->term_id, 'curated_posts', true );
+			$curated_posts['term_id_'.$term->term_id] = get_term_meta( $term->term_id, 'curated_posts', true );
 		}
 	}
 
-	if ( $first ) { // Return the first array element (lowest term_id)
-		return isset( $curated_posts[0] ) ? $curated_posts[0] : '';
-	} else { // Return entire array
-		return $curated_posts;
-	}
+	return $curated_posts;
 }
 
 /**
  *	Output curated posts
+ *
+ *	@param (int) $max - Maximum posts to display
+ *	@param (int) $columns - Number of columns (default 3)
+ *	@param (int) $column_class - Class to be assigned to each column
+ *	@param (int) $first_class - Class to be assigned to the first element of each column
  */
-function curated_posts_output( $columns = 3, $column_class = 'one-third', $first_class = 'first' ) {
+function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first' ) {
 
 	global $post;
 
-	$curated_posts = curated_posts_get_curated_posts();
+	// Bail if not a singular post
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
 
-	$count = 0;
+	// Get curated posts for all categories vs. first category (lowest ID; default)
+	$all = apply_filters( 'curated_posts_output_all_posts', false );
+
+	// Get curated posts
+	$curated_posts = curated_posts_get_curated_posts( $post->ID );
 
 	// Bail if no curated posts
 	if ( ! $curated_posts ) {
 		return;
 	}
 
-	foreach ( $curated_posts as $curated_post_data ) {
+	// Counter
+	$count = 0;
 
-		// Skip if curated_post_data not set
-		if ( ! $post_id = isset( $curated_post_data['post_id'] ) ? intval( $curated_post_data['post_id'] ) : '' ) {
-			continue;
+	// Open the curated posts section tag
+	echo '<section class="curated-posts">';
+
+	// Loop through each term
+	foreach ( $curated_posts as $term_id => $term_curated_posts ) {
+
+		// Break apart curated posts from each term by resetting counter
+		if ( apply_filters( 'curated_posts_output_separate_terms', true ) === true ) {
+			$count = 0;
 		}
 
-		// Curated post we're working with
-		$curated_post = get_post( $post_id );
+		// Loop through the term's curated posts
+		foreach ( $term_curated_posts as $curated_post_data ) {
 
-		// Skip if the current post is in the list of curated posts
-		if ( $curated_post->ID == $post->ID ) {
-			continue;
-		}
-
-		$title = ! empty( $curated_post_data['custom_title'] ) ? sanitize_text_field( $curated_post_data['custom_title'] ) : $curated_post->post_title;
-		$link = ! empty( $curated_post_data['custom_link'] ) ? sanitize_text_field( $curated_post_data['custom_link'] ) : get_permalink( $curated_post->ID );
-
-		if ( $columns !== 0 ) { // Columns 
-
-			if ( $count === 0 || 0 === $count % $columns ) {
-
-				$classes = array(
-					'curated-post',
-					$column_class,
-					$first_class
-				);
-
-				$classes = implode( ' ', $classes );
-
-			} else {
-
-				$classes = array(
-					'curated-post',
-					$column_class,
-				);
-
-				$classes = implode( ' ', $classes );
+			// Skip if over the max limit
+			if ( $max !== 0 && $count >= $max ) {
+				continue;
 			}
 
-		} else { // No columns
+			$curated_post_id = isset( $curated_post_data['post_id'] ) ? intval( $curated_post_data['post_id'] ) : '';
+
+			// Skip if curated_post_data not set
+			if ( ! $curated_post_id ) {
+				continue;
+			}
+
+			// Curated post we're working with
+			$curated_post = get_post( $curated_post_id );
+
+			// Skip if the current post is in the list of curated posts
+			if ( $curated_post->ID == $post->ID ) {
+				continue;
+			}
+
+			$title = ! empty( $curated_post_data['custom_title'] ) ? sanitize_text_field( $curated_post_data['custom_title'] ) : $curated_post->post_title;
+			$link = ! empty( $curated_post_data['custom_link'] ) ? sanitize_text_field( $curated_post_data['custom_link'] ) : get_permalink( $curated_post->ID );
 
 			$classes = array(
 				'curated-post',
+				$term_id,
+				'post_id_' . $curated_post->ID
 			);
 
+			if ( $columns !== 0 ) { // Columns 
+
+				if ( $count === 0 || 0 === $count % $columns ) {
+
+					$classes[] = $column_class;
+					$classes[] = $first_class;
+
+				} else {
+
+					$classes[] = $column_class;
+				}
+
+			} else { // No columns
+
+				//
+			}
+
 			$classes = implode( ' ', $classes );
+
+			ob_start();
+
+			printf( '<article class="%s" data-curated-posts-term-id="%s" data-curated-posts-post-id="%s">', $classes, str_replace( 'term_id_', '', $term_id ), $curated_post->ID );
+
+				printf( '<h2><a href="%s">%s</a></h2>', $link, $title );
+
+			echo '</article>';
+
+			$output = ob_get_clean();
+
+			/**
+			 *	Filter the output
+			 *
+			 *	@param (string) $output - Output markup
+			 *	@param (object) $curated_post - Curated post object
+			 *	@param (object) $post - Current post object
+			 *	@param (string) $title - Custom title setting
+			 *	@param (string) $link - Custom link setting
+			 *	@param (string) $classes - HTML/CSS classes for each curated post
+			 */
+			echo apply_filters( 'curated_posts_output', $output, $curated_post, $post, $title, $link, $classes );
+
+			$count++;
 		}
 
-		ob_start();
-
-		printf( '<article class="%s">', $classes );
-
-			printf( '<h2>%s</h2>', $title );
-			printf( '<a href="%s">%s</a>', $link, __( 'Read Post', 'curated-posts' ) );
-
-		echo '</article>';
-
-		$output = ob_get_clean();
-
-		/**
-		 *	Filter the output
-		 *
-		 *	@param (string) $output - Output markup
-		 *	@param (object) $curated_post - Curated post object
-		 *	@param (object) $post - Current post object
-		 *	@param (string) $title - Custom title setting
-		 *	@param (string) $link - Custom link setting
-		 *	@param (string) $classes - HTML/CSS classes for each curated post
-		 */
-		echo apply_filters( 'curated_posts_output', $output, $curated_post, $post, $title, $link, $classes );
-
-		$count++;
+		// Bail after the first iteration if displaying curated posts from only one term
+		if ( ! $all ) {
+			echo '</section>';
+			return;
+		}
 	}
+
+	echo '</section>';
 }
