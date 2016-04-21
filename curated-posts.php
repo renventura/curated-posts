@@ -107,6 +107,7 @@ class Curated_Posts {
 	public function includes() {
 
 		include_once 'includes/helper-functions.php';
+		include_once 'includes/shortcodes.php';
 
 		include_once 'includes/admin/settings-page.php';
 		include_once 'includes/admin/process-settings.php';

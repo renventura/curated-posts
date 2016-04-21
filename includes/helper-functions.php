@@ -122,7 +122,7 @@ function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-thir
 	$count = 0;
 
 	// Open the curated posts section tag
-	echo '<section class="curated-posts">';
+	echo '<section class="curated-posts clearfix">';
 
 	// Loop through each term
 	foreach ( $curated_posts as $term_id => $term_curated_posts ) {

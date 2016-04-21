@@ -31,6 +31,12 @@ function curated_posts_genesis_after_entry_content() {
 }
 ```
 
+You can also use the following shortcode in a post's content editor, or a text widget:
+
+```
+[curated_posts max="3" columns="3" column_class="one-third" first_class="first"]
+```
+
 ## Bugs ##
 If you find an issue, let me know!
 
