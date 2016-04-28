@@ -26,6 +26,8 @@
 		)));
  *
  *	Credit to Stephen Harris (stephenharris.info) for providing the base of this skeleton; https://gist.github.com/stephenh1988/3676396
+ *
+ *	@version 1.0.0
  */
 
 if ( ! class_exists( 'RV_Admin_Menu_Page' ) ) :
@@ -103,8 +105,10 @@ class RV_Admin_Menu_Page {
 			return;
 		}
 
+		$keys = array_keys( $this->tabs );
+
 		// Redirect to activate the first tab
-		wp_redirect( add_query_arg( 'tab', array_keys( $this->tabs )[0] ) );
+		wp_redirect( add_query_arg( 'tab', $keys[0] ) );
 		exit;
 	}
 
