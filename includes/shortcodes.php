@@ -18,12 +18,13 @@ function curated_posts_shortcode_callback( $atts ) {
 			'max' => '3',
 			'columns' => '3',
 			'column_class' => 'one-third',
-			'first_class' => 'first'
+			'first_class' => 'first',
+			'image' => 'true'
 		), $atts )
 	);
 
 	// Do the output
 	ob_start();
-	curated_posts_output( $max, $columns, $column_class, $first_class );
+	curated_posts_output( $max, $columns, $column_class, $first_class, $image );
 	return ob_get_clean();
 }

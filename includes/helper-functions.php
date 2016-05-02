@@ -97,8 +97,9 @@ function curated_posts_get_curated_posts( $post_id ) {
  *	@param (int) $columns - Number of columns (default 3)
  *	@param (int) $column_class - Class to be assigned to each column
  *	@param (int) $first_class - Class to be assigned to the first element of each column
+ *	@param (boolean) $image - Whether to include the post's featured image (default true)
  */
-function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first' ) {
+function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first', $image = true ) {
 
 	global $post;
 
@@ -157,6 +158,11 @@ function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-thir
 
 			$title = ! empty( $curated_post_data['custom_title'] ) ? sanitize_text_field( $curated_post_data['custom_title'] ) : $curated_post->post_title;
 			$link = ! empty( $curated_post_data['custom_link'] ) ? sanitize_text_field( $curated_post_data['custom_link'] ) : get_permalink( $curated_post->ID );
+			
+			$image_url = '';
+			if ( $image ) {
+				$image_url = wp_get_attachment_url( get_post_thumbnail_id( $curated_post->ID ) );
+			}
 
 			$classes = array(
 				'curated-post',
@@ -187,7 +193,13 @@ function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-thir
 
 			printf( '<article class="%s" data-curated-posts-term-id="%s" data-curated-posts-post-id="%s">', $classes, str_replace( 'term_id_', '', $term_id ), $curated_post->ID );
 
-				printf( '<h2><a href="%s">%s</a></h2>', $link, $title );
+				printf( '<h2><a href="%s">', $link );
+
+				if ( $image_url ) {
+					printf( '<img src="%s" alt="%s" class="curated-post-featured-image alignnone" />', $image_url, $title );
+				}
+
+				printf( '%s</a></h2>', $title );
 
 			echo '</article>';
 
@@ -202,8 +214,9 @@ function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-thir
 			 *	@param (string) $title - Custom title setting
 			 *	@param (string) $link - Custom link setting
 			 *	@param (string) $classes - HTML/CSS classes for each curated post
+			 *	@param (string) $image_url - Featured image URL
 			 */
-			echo apply_filters( 'curated_posts_output', $output, $curated_post, $post, $title, $link, $classes );
+			echo apply_filters( 'curated_posts_output', $output, $curated_post, $post, $title, $link, $classes, $image_url );
 
 			$count++;
 		}
