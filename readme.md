@@ -23,7 +23,7 @@ Genesis Framework example:
 /**
  *	Output a maximum of 3 curated posts after entry content, with no columns (Genesis)
  *
- *	@uses curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first' )
+ *	@uses curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-third', $first_class = 'first', $image = true )
  */
 add_action( 'genesis_after_entry_content', 'curated_posts_genesis_after_entry_content' );
 function curated_posts_genesis_after_entry_content() {
@@ -34,7 +34,7 @@ function curated_posts_genesis_after_entry_content() {
 You can also use the following shortcode in a post's content editor, or a text widget:
 
 ```
-[curated_posts max="3" columns="3" column_class="one-third" first_class="first"]
+[curated_posts max="3" columns="3" column_class="one-third" first_class="first" image="true"]
 ```
 
 ## Bugs ##
