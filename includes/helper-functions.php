@@ -122,8 +122,14 @@ function curated_posts_output( $max = 3, $columns = 3, $column_class = 'one-thir
 	// Counter
 	$count = 0;
 
+	$headline = apply_filters( 'curated_posts_output_headline', __( 'Related Posts', 'curated-posts' ) );
+
 	// Open the curated posts section tag
 	echo '<section class="curated-posts clearfix">';
+
+	if ( $headline ) {
+		printf( '<h4 class="curated-posts-headline">%s</h4>', $headline );
+	}
 
 	// Loop through each term
 	foreach ( $curated_posts as $term_id => $term_curated_posts ) {
